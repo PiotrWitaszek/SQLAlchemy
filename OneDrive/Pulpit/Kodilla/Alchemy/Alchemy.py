@@ -1,8 +1,9 @@
+from sqlite3 import Date
 import sqlalchemy
 from sqlalchemy import Table, Column, Integer, String, Float, MetaData
 from sqlalchemy import create_engine, engine
 
-engine = create_engine("sqlite:///base.db")
+engine = create_engine("sqlite:///base.db", echo=True)
 
 meta = MetaData()
 
@@ -12,7 +13,6 @@ stations = Table(
     Column("id", Integer, primary_key=True),
     Column("station", String),
     Column("latitude", Float),
-    # czy float jest tutaj dobry?
     Column("longitude", Float),
     Column("elevation", Float),
     Column("name", String),
@@ -22,7 +22,6 @@ stations = Table(
 
 meta.create_all(engine)
 print(engine.table_names())
-engine = create_engine("sqlite:///base.db", echo=True)
 
 
 ins = stations.insert()
@@ -79,9 +78,65 @@ conn.execute(
     ],
 )
 conn = engine.connect()
-result = conn.execute(ins)
-conn.execute("SELECT * FROM stations LIMIT 5").fetchall()
+result = conn.execute("SELECT * FROM stations LIMIT 5").fetchall()
 for row in result:
     print(row)
 
-# wyskoczyła mi kosmiczna ilość błędów - od czego polecałbyś zacząc
+measure = Table(
+    "measure",
+    meta,
+    Column("id", Integer, primary_key=True),
+    Column("station", String),
+    Column("date", String),
+    # używać to string czy date?
+    Column("precipe", Float),
+    Column("tobs", Float),
+)
+
+meta.create_all(engine)
+print(engine.table_names())
+
+ins = measure.insert()
+ins = measure.insert().values(
+    station="USC00519397",
+    date="2010-01-01",
+    precipe=0.08,
+    tobs=65,
+)
+
+conn = engine.connect()
+result = conn.execute(ins)
+conn.execute(
+    ins,
+    [
+        {
+            "station": "USC00519397",
+            "date": "2010-01-02",
+            "precipe": 157.8015,
+            "tobs": 63,
+        },
+        {
+            "station": "USC00519397",
+            "date": "2010-01-03",
+            "precipe": 0.0,
+            "tobs": 74,
+        },
+        {
+            "station": "USC00519397",
+            "date": "2010-01-04",
+            "precipe": 0.0,
+            "tobs": 76,
+        },
+        {
+            "station": "USC00519397",
+            "date": "2010-01-06",
+            "precipe": 0.0,
+            "tobs": 73,
+        },
+    ],
+)
+
+conn = engine.connect()
+result = conn.execute("SELECT * FROM measure LIMIT 5").fetchall()
+for row in result:
+    print(row)
