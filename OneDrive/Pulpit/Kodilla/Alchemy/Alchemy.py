@@ -1,11 +1,10 @@
-from sqlite3 import Date
-import sqlalchemy
 from sqlalchemy import Table, Column, Integer, String, Float, MetaData
 from sqlalchemy import create_engine, engine
 
 engine = create_engine("sqlite:///base.db", echo=True)
 
 meta = MetaData()
+conn = engine.connect()
 
 stations = Table(
     "stations",
@@ -37,20 +36,19 @@ print(engine.table_names())
 
 if __name__ == "__maine__":
     ins = stations.insert()
-    ins = stations.insert().values(
-        station="USC00519397",
-        latitude=21.2716,
-        longitude=157.8168,
-        elevation=3.0,
-        name="WAIKIKI",
-        country="US",
-        state="HI",
-    )
-    conn = engine.connect()
     result = conn.execute(ins)
     conn.execute(
         ins,
         [
+            {
+                "station": "USC00519397",
+                "latitude": 21.2716,
+                "longitude": 157.8168,
+                "elevation": 3.0,
+                "name": "WAIKIKI",
+                "country": "US",
+                "state": "HI",
+            },
             {
                 "station": "USC00513117",
                 "latitude": 21.4234,
@@ -95,17 +93,16 @@ if __name__ == "__maine__":
         print(row)
 
     ins = measure.insert()
-    ins = measure.insert().values(
-        station="USC00519397",
-        date="2010-01-01",
-        precipe=0.08,
-        tobs=65,
-    )
-    conn = engine.connect()
     result = conn.execute(ins)
     conn.execute(
         ins,
         [
+            {
+                "station": "USC00519397",
+                "date": "2010-01-01",
+                "precipe": 0.08,
+                "tobs": 65,
+            },
             {
                 "station": "USC00519397",
                 "date": "2010-01-02",
@@ -132,7 +129,9 @@ if __name__ == "__maine__":
             },
         ],
     )
-    conn = engine.connect()
     result = conn.execute("SELECT * FROM measure LIMIT 5").fetchall()
     for row in result:
         print(row)
+# Prośba o wrzucanie działających kodów zasadna ale teraz nie mogę jej spełnić        
+# Kod nie działa i za bardzo nie wiem co zmienic  - przed wrzuceniem if __name__ == "__maine__" działało więc gdzie jest błąd?
+# Czy do update, delete itd definiować funkcje czy zrobić tak jak z select? 
