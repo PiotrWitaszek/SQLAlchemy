@@ -34,7 +34,7 @@ meta.create_all(engine)
 print(engine.table_names())
 
 
-if __name__ == "__maine__":
+if __name__ == "__main__":
     ins = stations.insert()
     result = conn.execute(ins)
     conn.execute(
@@ -132,6 +132,17 @@ if __name__ == "__maine__":
     result = conn.execute("SELECT * FROM measure LIMIT 5").fetchall()
     for row in result:
         print(row)
-# Prośba o wrzucanie działających kodów zasadna ale teraz nie mogę jej spełnić        
-# Kod nie działa i za bardzo nie wiem co zmienic  - przed wrzuceniem if __name__ == "__maine__" działało więc gdzie jest błąd?
-# Czy do update, delete itd definiować funkcje czy zrobić tak jak z select? 
+    result = conn.execute(
+        "UPDATE measure SET precipe=? WHERE date=?", (222.0, "2010-01-04")
+    )
+    result = conn.execute("SELECT * FROM measure LIMIT 5").fetchall()
+    for row in result:
+        print(row)
+    result = conn.execute("DELETE FROM measure WHERE date=?", ("2010-01-02",))
+    result = conn.execute("SELECT * FROM measure LIMIT 5").fetchall()
+    for row in result:
+        print(row)
+    result = conn.execute("DELETE FROM measure")
+    result = conn.execute("SELECT * FROM measure LIMIT 5").fetchall()
+    for row in result:
+        print(row)
