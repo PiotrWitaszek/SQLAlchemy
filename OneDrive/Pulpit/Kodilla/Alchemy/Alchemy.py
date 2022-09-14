@@ -37,7 +37,6 @@ print(engine.table_names())
 
 if __name__ == "__main__":
     ins = stations.insert()
-    result = conn.execute(ins)
     conn.execute(
         ins,
         [
@@ -95,7 +94,6 @@ if __name__ == "__main__":
         print(row)
 
     ins = measure.insert()
-    result = conn.execute(ins)
     conn.execute(
         ins,
         [
@@ -131,25 +129,22 @@ if __name__ == "__main__":
             },
         ],
     )
-    s = measure.select()
-    result = conn.execute(s)
+    a = measure.select()
+    result = conn.execute(a)
     for row in result:
         print(row)
     s = measure.update().where(measure.c.date == "2010-01-04").values(precipe=222.0)
     result = conn.execute(s)
-    s = measure.select()
-    result = conn.execute(s)
+    result = conn.execute(a)
     for row in result:
         print(row)
     s = measure.delete().where(measure.c.date == "2010-01-04")
     result = conn.execute(s)
-    s = measure.select()
-    result = conn.execute(s)
+    result = conn.execute(a)
     for row in result:
         print(row)
     s = measure.delete()
     result = conn.execute(s)
-    s = measure.select()
-    result = conn.execute(s)
+    result = conn.execute(a)
     for row in result:
         print(row)
