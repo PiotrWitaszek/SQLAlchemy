@@ -1,3 +1,4 @@
+from ast import Delete
 from sqlalchemy import Table, Column, Integer, String, Float, MetaData
 from sqlalchemy import create_engine, engine
 
@@ -88,7 +89,8 @@ if __name__ == "__main__":
         ],
     )
     conn = engine.connect()
-    result = conn.execute("SELECT * FROM stations LIMIT 5").fetchall()
+    s = stations.select()
+    result = conn.execute(s)
     for row in result:
         print(row)
 
@@ -129,20 +131,25 @@ if __name__ == "__main__":
             },
         ],
     )
-    result = conn.execute("SELECT * FROM measure LIMIT 5").fetchall()
+    s = measure.select()
+    result = conn.execute(s)
     for row in result:
         print(row)
-    result = conn.execute(
-        "UPDATE measure SET precipe=? WHERE date=?", (222.0, "2010-01-04")
-    )
-    result = conn.execute("SELECT * FROM measure LIMIT 5").fetchall()
+    s = measure.update().where(measure.c.date == "2010-01-04").values(precipe=222.0)
+    result = conn.execute(s)
+    s = measure.select()
+    result = conn.execute(s)
     for row in result:
         print(row)
-    result = conn.execute("DELETE FROM measure WHERE date=?", ("2010-01-02",))
-    result = conn.execute("SELECT * FROM measure LIMIT 5").fetchall()
+    s = measure.delete().where(measure.c.date == "2010-01-04")
+    result = conn.execute(s)
+    s = measure.select()
+    result = conn.execute(s)
     for row in result:
         print(row)
-    result = conn.execute("DELETE FROM measure")
-    result = conn.execute("SELECT * FROM measure LIMIT 5").fetchall()
+    s = measure.delete()
+    result = conn.execute(s)
+    s = measure.select()
+    result = conn.execute(s)
     for row in result:
         print(row)
